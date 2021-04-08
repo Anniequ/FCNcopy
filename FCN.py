@@ -60,6 +60,7 @@ class fcn(nn.Module):
         x = self.stage3(x)
         s3 = x  # 224/32 = 7
 
+
         s3 = self.scores1(s3)  # 将各通道信息融合
         s3 = self.upsample_2x(s3)  # 上采样
         s2 = self.scores2(s2)
@@ -67,7 +68,9 @@ class fcn(nn.Module):
 
         s1 = self.scores3(s1)
         s2 = self.upsample_4x(s2)  # 上采样，变成28*28
-        s = s1 + s2  # 28*28
+
+
+        # s = s1 + s2  # 28*28
 
         s = self.upsample_8x(s2)  # 放大八倍，变成224*224
         return s  # 返回特征图

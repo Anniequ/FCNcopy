@@ -13,7 +13,7 @@ import torchvision.transforms as tfs
 from torch.utils.data import DataLoader
 import torchvision.models as models
 
-voc_root = os.path.join("data", "VOC2012")
+voc_root = r'./data/MYVOC'
 np.seterr(divide='ignore', invalid='ignore')
 
 
@@ -28,24 +28,6 @@ def read_img(root=voc_root, train=True):
     return data, label
 
 
-"""
-#数据显示
-
-img = Image.open(data[0])
-plt.subplot(2,2,1), plt.imshow(img)
-
-img = Image.open(label[0])
-plt.subplot(2,2,2), plt.imshow(img)
-
-img = Image.open(data[1])
-plt.subplot(2,2,3), plt.imshow(img)
-
-img = Image.open(label[1])
-plt.subplot(2,2,4), plt.imshow(img)
-plt.show()
-
-"""
-
 
 # 图片大小不同，同时裁剪data and label
 def crop(data, label, height, width):
@@ -56,31 +38,11 @@ def crop(data, label, height, width):
     return data, label
 
 
-"""
-# 裁剪后图片显示
-img = Image.open(data[0])
-lab = Image.open(label[0])
-plt.subplot(2,2,1), plt.imshow(img)
-plt.subplot(2,2,2), plt.imshow(lab)
-
-img, lab = crop(img, lab, 224, 224)
-plt.subplot(2,2,3),plt.imshow(img)
-plt.subplot(2,2,4),plt.imshow(lab)
-plt.show()
-"""
-
 # VOC数据集中对应的标签
-classes = ['background', 'aeroplane', 'bicycle', 'bird', 'boat',
-           'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable',
-           'dog', 'horse', 'motorbike', 'person', 'potted plant',
-           'sheep', 'sofa', 'train', 'tv/monitor']
+classes = ['background', 'tape', 'scissors', 'nailpolish', 'lighter']
 
 # 各种标签所对应的颜色
-colormap = [[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0], [0, 0, 128],
-            [128, 0, 128], [0, 128, 128], [128, 128, 128], [64, 0, 0], [192, 0, 0],
-            [64, 128, 0], [192, 128, 0], [64, 0, 128], [192, 0, 128],
-            [64, 128, 128], [192, 128, 128], [0, 64, 0], [128, 64, 0],
-            [0, 192, 0], [128, 192, 0], [0, 64, 128]]
+colormap = [[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0], [0, 0, 128]]
 cm2lbl = np.zeros(256 ** 3)
 
 # 枚举的时候i是下标，cm是一个三元组，分别标记了RGB值
@@ -95,19 +57,10 @@ def image2label(im):
     return np.array(cm2lbl[idx], dtype="int64")
 
 
-"""
-# 标签对应图片
-im = Image.open(label[20]).convert("RGB")
-label_im = image2label(im)
-plt.imshow(im)
-plt.show()
-print(label_im[100:110, 200:210])
-
-"""
 
 
-def image_transforms(data, label, height, width):
-    data, label = crop(data, label, height, width)
+
+def image_transforms(data, label):
     # 将数据转换成tensor，并且做标准化处理
     im_tfs = tfs.Compose([
         tfs.ToTensor(),
@@ -153,7 +106,7 @@ class VOCSegDataset(torch.utils.data.Dataset):
         label = self.label_list[idx]
         img = Image.open(img)
         label = Image.open(label).convert('RGB')
-        img, label = self.transforms(img, label, self.height, self.width)
+        img, label = self.transforms(img, label)
         return img, label
 
     def __len__(self):

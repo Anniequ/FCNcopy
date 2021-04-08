@@ -31,8 +31,8 @@ def train(epoches=20, show_vgg_params=False):
     voc_train = VOCSegDataset(True, height, width)
     voc_test = VOCSegDataset(False, height, width)
 
-    train_data = DataLoader(voc_train, batch_size=8, shuffle=True)
-    valid_data = DataLoader(voc_test, batch_size=8)
+    train_data = DataLoader(voc_train, batch_size=4, shuffle=True)
+    valid_data = DataLoader(voc_test, batch_size=4)
     # 加载预训练的resnet34网络
     model_root = "./model/resnet34-333f7ec4.pth"
     pretrained_net = models.resnet34(pretrained=False)
@@ -157,6 +157,7 @@ def train(epoches=20, show_vgg_params=False):
     plt.title("loss during training")
     plt.legend()
     plt.grid()
+    plt.savefig(r'./results/train_loss.png')
     plt.show()
     # print(train_loss)
     # print(train_acc)
@@ -169,7 +170,7 @@ def train(epoches=20, show_vgg_params=False):
     plt.title("accuracy during training")
     plt.legend()
     plt.grid()
-
+    plt.savefig(r'./results/acc.png')
     plt.show()
 
     plt.plot(epoch, train_mean_iu, label="train_mean_iu")
@@ -177,6 +178,7 @@ def train(epoches=20, show_vgg_params=False):
     plt.title("mean iu during training")
     plt.legend()
     plt.grid()
+    plt.savefig(r'./results/mean_iu.png')
     plt.show()
 
     # 测试模型性能
@@ -186,4 +188,4 @@ def train(epoches=20, show_vgg_params=False):
 
 
 if __name__ == '__main__':
-    train(5)
+    train(50)
